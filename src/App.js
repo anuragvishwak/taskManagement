@@ -1,14 +1,34 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import AddTasks from "./AddTasks";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { database } from "./FirebaseConfig";
-import { IoHeartDislikeCircleOutline, IoPencil } from "react-icons/io5";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdKeyboardArrowDown } from "react-icons/md";
+import { IoClose, IoPencil } from "react-icons/io5";
+import UpdateTask from "./UpdateTask";
+import { toast } from "react-toastify";
+import { IoIosArrowUp } from "react-icons/io";
+import { motion } from "framer-motion";
 
 function App() {
   const [openingAddTaskForm, setopeningAddTaskForm] = useState(false);
+  const [openingUpdateTaskForm, setopeningUpdateTaskForm] = useState(false);
+  const [capturingWholeData, setcapturingWholeData] = useState({});
   const [gettingTasks, setgettingTasks] = useState([]);
+  const [openingDeletePopup, setopeningDeletePopup] = useState(false);
+  const [capturingTaskId, setcapturingTaskId] = useState(null);
+  const [openedTaskId, setOpenedTaskId] = useState(null);
+
+  function handleUpdate(task) {
+    setopeningUpdateTaskForm(true);
+    setcapturingWholeData(task);
+  }
+
+  function handleDelete(taskId, task) {
+    setopeningDeletePopup(true);
+    setcapturingTaskId(taskId);
+    setcapturingWholeData(task);
+  }
 
   async function renderingTasks() {
     const taskDetails = await getDocs(
@@ -22,6 +42,20 @@ function App() {
     console.log(multipleArray);
   }
 
+  async function deletingTask(taskId) {
+    try {
+      const taskRef = doc(database, "todo_list_details", taskId);
+      await deleteDoc(taskRef);
+
+      setopeningUpdateTaskForm(false);
+      toast.success("Task deleted successfully!");
+      renderingTasks();
+    } catch (error) {
+      console.error("Error deleting task: ", error);
+      toast.error("Something went wrong!");
+    }
+  }
+
   useEffect(() => {
     renderingTasks();
   }, []);
@@ -29,7 +63,9 @@ function App() {
   return (
     <div className="bg-gray-50 min-h-screen h-full p-5">
       <div className="flex items-center justify-between">
-        <p className="text-2xl sm:text-3xl font-semibold text-[#333333]">Welcome User</p>
+        <p className="text-2xl sm:text-3xl font-semibold text-[#333333]">
+          Welcome User
+        </p>
         <button
           onClick={() => {
             setopeningAddTaskForm(true);
@@ -41,18 +77,108 @@ function App() {
       </div>
 
       <div>
-        {gettingTasks.map((task) => (
-          <div className="flex items-center justify-between my-3 p-3 border border-gray-300 rounded">
-            <p>{task.title}</p>
-            <div className="flex items-center space-x-2">
-              <button className='text-blue-500 bg-blue-100 p-1 rounded'><IoPencil/></button>
-              <button className='text-red-500 bg-red-100 p-1 rounded'><MdDelete/></button>
+        {gettingTasks?.map((task) => (
+          <div className="my-3 p-3 border bg-white shadow border-gray-300 rounded">
+            <div className="flex items-center justify-between">
+              <p className="font-bold">{task.title}</p>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => {
+                    setOpenedTaskId(openedTaskId === task.id ? null : task.id);
+                  }}
+                  className="text-gray-500 bg-gray-50 border p-1 rounded"
+                >
+                  {openedTaskId === task.id ? (
+                    <IoIosArrowUp size={17} />
+                  ) : (
+                    <MdKeyboardArrowDown size={20} />
+                  )}
+                </button>
+
+                <button
+                  onClick={() => {
+                    handleUpdate(task);
+                  }}
+                  className="text-blue-500 bg-blue-100 p-1 rounded"
+                >
+                  <IoPencil />
+                </button>
+                <button
+                  onClick={() => {
+                    handleDelete(task.id, task);
+                  }}
+                  className="text-red-500 bg-red-100 p-1 rounded"
+                >
+                  <MdDelete />
+                </button>
+              </div>
             </div>
+
+            {openedTaskId === task.id && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="overflow-hidden"
+              >
+                <p className="mt-2">{task.description}</p>
+              </motion.div>
+            )}
           </div>
         ))}
       </div>
 
-      {openingAddTaskForm && <AddTasks setopeningAddTaskForm = {setopeningAddTaskForm} renderingTasks = {renderingTasks} />}
+      {openingAddTaskForm && (
+        <AddTasks
+          setopeningAddTaskForm={setopeningAddTaskForm}
+          renderingTasks={renderingTasks}
+        />
+      )}
+
+      {openingDeletePopup && (
+        <div className="bg-black z-50 flex flex-col justify-center items-center fixed inset-0 bg-opacity-70">
+          <div className="bg-white sm:mx-0 mx-5 p-4 rounded">
+            <p className="mb-3 sm:text-lg">
+              Are you want to delete{" "}
+              <strong>'{capturingWholeData.title}'</strong>
+            </p>
+
+            <div className="flex items-center justify-end space-x-2">
+              <button
+                onClick={() => {
+                  setopeningDeletePopup(false);
+                }}
+                className="bg-[#333333] py-1 px-3 rounded text-white"
+              >
+                <div className="flex items-center space-x-1">
+                  <IoClose />
+                  Cancel
+                </div>
+              </button>
+              <button
+                onClick={() => {
+                  deletingTask(capturingTaskId);
+                }}
+                className="bg-red-500 text-white py-1 px-3 rounded"
+              >
+                <div className="flex items-center space-x-1">
+                  <MdDelete />
+                  Delete
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {openingUpdateTaskForm && (
+        <UpdateTask
+          setopeningUpdateTaskForm={setopeningUpdateTaskForm}
+          renderingTasks={renderingTasks}
+          capturingWholeData={capturingWholeData}
+        />
+      )}
     </div>
   );
 }
