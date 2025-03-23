@@ -19,6 +19,19 @@ function App() {
   const [capturingTaskId, setcapturingTaskId] = useState(null);
   const [openedTaskId, setOpenedTaskId] = useState(null);
 
+  function handleCheckbox(taskId) {
+    setgettingTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === taskId
+          ? {
+              ...task,
+              status: task.status === "pending" ? "completed" : "pending",
+            }
+          : task
+      )
+    );
+  }
+
   function handleUpdate(task) {
     setopeningUpdateTaskForm(true);
     setcapturingWholeData(task);
@@ -61,7 +74,7 @@ function App() {
   }, []);
 
   return (
-    <div className="bg-gray-50 min-h-screen h-full p-5">
+    <div className="bg-gray-50 min-h-screen h-full p-4 sm:p-5">
       <div className="flex items-center justify-between">
         <p className="text-2xl sm:text-3xl font-semibold text-[#333333]">
           Welcome User
@@ -79,52 +92,80 @@ function App() {
       <div>
         {gettingTasks?.map((task) => (
           <div className="my-3 p-3 border bg-white shadow border-gray-300 rounded">
-            <div className="flex items-center justify-between">
-              <p className="font-bold">{task.title}</p>
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => {
-                    setOpenedTaskId(openedTaskId === task.id ? null : task.id);
+            <div className="flex space-x-2 items-center">
+              <div className="mt-2">
+                <input
+                  checked={task.status === "completed"}
+                  onChange={() => {
+                    handleCheckbox(task.id);
                   }}
-                  className="text-gray-500 bg-gray-50 border p-1 rounded"
+                  type="checkbox"
+                  className="h-5 w-6"
+                ></input>
+              </div>
+              <div className="flex items-center w-full justify-between">
+                <p
+                  className={`${
+                    task.status === "completed"
+                      ? "line-through text-gray-400"
+                      : "text-[#333333]"
+                  } font-bold  border-gray-400`}
                 >
-                  {openedTaskId === task.id ? (
-                    <IoIosArrowUp size={17} />
-                  ) : (
-                    <MdKeyboardArrowDown size={20} />
-                  )}
-                </button>
+                  {task.title}
+                </p>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => {
+                      setOpenedTaskId(
+                        openedTaskId === task.id ? null : task.id
+                      );
+                    }}
+                    className="text-gray-500 bg-gray-50 border p-1 rounded"
+                  >
+                    {openedTaskId === task.id ? (
+                      <IoIosArrowUp size={17} />
+                    ) : (
+                      <MdKeyboardArrowDown size={20} />
+                    )}
+                  </button>
 
-                <button
-                  onClick={() => {
-                    handleUpdate(task);
-                  }}
-                  className="text-blue-500 bg-blue-100 p-1 rounded"
-                >
-                  <IoPencil />
-                </button>
-                <button
-                  onClick={() => {
-                    handleDelete(task.id, task);
-                  }}
-                  className="text-red-500 bg-red-100 p-1 rounded"
-                >
-                  <MdDelete />
-                </button>
+                  <button
+                    disabled={task.status === "completed"}
+                    onClick={() => {
+                      handleUpdate(task);
+                    }}
+                    className="text-blue-500 bg-blue-100 p-1 rounded"
+                  >
+                    <IoPencil />
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleDelete(task.id, task);
+                    }}
+                    className="text-red-500 bg-red-100 p-1 rounded"
+                  >
+                    <MdDelete />
+                  </button>
+                </div>
               </div>
             </div>
-
-            {openedTaskId === task.id && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="overflow-hidden"
-              >
-                <p className="mt-2">{task.description}</p>
-              </motion.div>
-            )}
+            <div>
+              {openedTaskId === task.id && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="overflow-hidden"
+                >
+                  <hr className="my-1"/>
+                  <div className="flex items-center space-x-2">
+                    <p className="font-semibold text-gray-500">Desc:</p>
+                    <p className="text-[#333333]">{task.description}</p>
+                  </div>
+                </motion.div>
+              )}
+            </div>
           </div>
         ))}
       </div>
