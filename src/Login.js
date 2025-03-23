@@ -9,7 +9,7 @@ function Login() {
   return (
     <div className="sm:flex justify-center">
       <div className="flex items-center h-full py-[92px] sm:h-auto justify-center w-full">
-        <div>
+        <div className="text-[#0F4C5C]">
           <p className="text-bold text-8xl">TO DO</p>
           <p className="text-xl text-center mt-1 font-semibold">
             Reminds Everything!
