@@ -34,7 +34,7 @@ function UpdateTask({
       console.error("Error updating task: ", error);
       toast.error("Something went wrong!!");
     }
-  }
+  } 
 
   return (
     <div className="bg-black z-50 flex flex-col justify-center items-center fixed inset-0 bg-opacity-70">

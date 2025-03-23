@@ -17,6 +17,7 @@ function AddTasks({ renderingTasks, setopeningAddTaskForm }) {
         description: description,
         date: currentDate,
         priority: priority,
+        status: 'pending'
       });
       setopeningAddTaskForm(false);
       toast.success("Task added successfully!!");
