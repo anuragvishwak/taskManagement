@@ -79,7 +79,7 @@ function UpdateTask({
             onChange={(e) => {
               setpriority(e.target.value);
             }}
-            className="border p-1.5 rounded border-gray-300 w-52"
+            className="border p-1.5 rounded border-gray-300 w-40"
           >
             <option>select priority</option>
             <option>Urgent</option>
