@@ -8,6 +8,7 @@ function AddTasks({ renderingTasks, setopeningAddTaskForm }) {
   const [title, settitle] = useState("");
   const [description, setdescription] = useState("");
   const [priority, setpriority] = useState("");
+  const [category, setcategory] = useState("");
   const currentDate = new Date();
 
   async function creatingTask() {
@@ -17,7 +18,8 @@ function AddTasks({ renderingTasks, setopeningAddTaskForm }) {
         description: description,
         date: currentDate,
         priority: priority,
-        status: 'pending'
+        category: category,
+        status: "pending",
       });
       setopeningAddTaskForm(false);
       toast.success("Task added successfully!!");
@@ -30,9 +32,9 @@ function AddTasks({ renderingTasks, setopeningAddTaskForm }) {
 
   return (
     <div className="bg-black z-50 flex flex-col justify-center items-center fixed inset-0 bg-opacity-70">
-      <div className="bg-white p-5 rounded-lg">
+      <div className="bg-white w-80 sm:w-5/12 p-5 rounded">
         <div className="flex items-center mb-5 justify-between">
-          <p className="text-xl text-[#333333] font-bold">Add Task</p>
+          <p className="text-xl text-[#0F4C5C] font-bold">Add Task</p>
           <button
             onClick={() => {
               setopeningAddTaskForm(false);
@@ -43,7 +45,7 @@ function AddTasks({ renderingTasks, setopeningAddTaskForm }) {
         </div>
         <div className="w-full">
           <div>
-            <p className="text-lg font-semibold text-[#333333]">Title:</p>
+            <p className="text-lg font-semibold text-[#0F4C5C]">Title:</p>
             <input
               onChange={(e) => {
                 settitle(e.target.value);
@@ -53,22 +55,22 @@ function AddTasks({ renderingTasks, setopeningAddTaskForm }) {
             ></input>
           </div>
           <div className="my-3">
-            <p className="font-semibold text-lg text-[#333333]">Description:</p>
+            <p className="font-semibold text-lg text-[#0F4C5C]">Description:</p>
             <textarea
               onChange={(e) => {
                 setdescription(e.target.value);
               }}
               placeholder="Write something here..."
-              className="italic border h-20 p-1.5 rounded border-gray-300 w-80"
+              className="italic border h-20 p-1.5 rounded border-gray-300 w-full"
             ></textarea>
           </div>
         </div>
-        <div className="flex items-center justify-between">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 ">
           <select
             onChange={(e) => {
               setpriority(e.target.value);
             }}
-            className="border p-1.5 rounded border-gray-300 w-52"
+            className="border p-1.5  text-[#0F4C5C] rounded border-gray-300"
           >
             <option>select priority</option>
             <option>Urgent</option>
@@ -77,15 +79,27 @@ function AddTasks({ renderingTasks, setopeningAddTaskForm }) {
             <option>Low</option>
             <option>Optional</option>
           </select>
-          <button
-            onClick={() => {
-              creatingTask();
+
+          <select
+            onChange={(e) => {
+              setcategory(e.target.value);
             }}
-            className="bg-[#333333] text-white py-1.5 ml-2 px-5 rounded"
+            className="border p-1.5 rounded text-[#0F4C5C] border-gray-300"
           >
-            Add Task
-          </button>
+            <option>select Category</option>
+            <option>Work</option>
+            <option>Personal</option>
+            <option>Shopping</option>
+          </select>
         </div>
+        <button
+          onClick={() => {
+            creatingTask();
+          }}
+          className="bg-[#0F4C5C] text-white py-1.5 w-full mt-5 rounded"
+        >
+          Add Task
+        </button>
       </div>
     </div>
   );

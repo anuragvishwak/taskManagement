@@ -65,6 +65,7 @@ function MainTodo() {
       setopeningUpdateTaskForm(false);
       toast.success("Task deleted successfully!");
       renderingTasks();
+      setopeningDeletePopup(false);
     } catch (error) {
       console.error("Error deleting task: ", error);
       toast.error("Something went wrong!");
@@ -78,7 +79,7 @@ function MainTodo() {
     <div>
       <div className="bg-gray-50 min-h-screen h-full p-4 sm:p-5">
         <div className="flex items-center justify-between">
-          <p className="text-2xl  sm:text-3xl font-semibold text-[#333333]">
+          <p className="text-2xl  sm:text-3xl font-semibold text-[#0F4C5C]">
             Welcome User
           </p>
           <button
@@ -86,9 +87,9 @@ function MainTodo() {
               localStorage.clear();
               navigation("/");
             }}
-            className="border-2 rounded px-4 py-1 border-gray-500"
+            className="border rounded px-4 py-1 border-[#0F4C5C]"
           >
-            <div className="flex sm:text-lg font-semibold items-center space-x-2">
+            <div className="flex text-[#0F4C5C] font-semibold items-center space-x-2">
               <IoLogOut size={20} />
               Logout
             </div>
@@ -115,7 +116,7 @@ function MainTodo() {
             onClick={() => {
               setopeningAddTaskForm(true);
             }}
-            className="bg-[#333333] py-1 px-3 rounded font-senibold text-white"
+            className="bg-[#0F4C5C] py-1 px-3 rounded font-senibold text-white"
           >
             + Create List
           </button>
@@ -189,8 +190,8 @@ function MainTodo() {
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                     className="overflow-hidden"
                   >
-                    <hr className="my-1" />
-                    <div className="flex space-x-2">
+                    <hr className="my-2" />
+                    <div className="flex bg-[#f0fcff] border border-[#c6f5ff] shadow p-2 rounded space-x-2">
                       <p className="font-semibold text-gray-500">Desc:</p>
                       <p className="text-[#333333]">{task.description}</p>
                     </div>
