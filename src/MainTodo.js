@@ -122,84 +122,116 @@ function MainTodo() {
           </button>
         </div>
         <div>
-          {gettingTasks?.map((task) => (
-            <div className="my-3 p-3 border bg-white shadow border-gray-300 rounded">
-              <div className="flex space-x-2 items-center">
-                <div className="mt-2">
-                  <input
-                    checked={task.status === "completed"}
-                    onChange={() => {
-                      handleCheckbox(task.id);
-                    }}
-                    type="checkbox"
-                    className="h-5 w-6"
-                  ></input>
-                </div>
-                <div className="flex items-center w-full justify-between">
-                  <p
-                    className={`${
-                      task.status === "completed"
-                        ? "line-through text-gray-400"
-                        : "text-[#333333]"
-                    } font-bold  border-gray-400`}
-                  >
-                    {task.title}
-                  </p>
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => {
-                        setOpenedTaskId(
-                          openedTaskId === task.id ? null : task.id
-                        );
+          {gettingTasks
+            ?.filter(
+              (task) =>
+                priority === "select priority" ||
+                priority === "" ||
+                task.priority === priority
+            )
+            .map((task) => (
+              <motion.div
+                key={task.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="my-3 p-3  bg-white border"
+              >
+                <div className="flex space-x-2 items-center">
+                  <div className="mt-2">
+                    <input
+                      checked={task.status === "completed"}
+                      onChange={() => {
+                        handleCheckbox(task.id);
                       }}
-                      className="text-gray-500 bg-gray-50 border p-1 rounded"
+                      type="checkbox"
+                      className="h-5 w-6"
+                    ></input>
+                  </div>
+                  <div className="flex items-center w-full justify-between">
+                    <p
+                      className={`${
+                        task.status === "completed"
+                          ? "line-through text-gray-400"
+                          : "text-[#0F4C5C]"
+                      } font-bold  border-gray-400`}
                     >
-                      {openedTaskId === task.id ? (
-                        <IoIosArrowUp size={17} />
-                      ) : (
-                        <MdKeyboardArrowDown size={20} />
-                      )}
-                    </button>
+                      {task.title}
+                    </p>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={() => {
+                          setOpenedTaskId(
+                            openedTaskId === task.id ? null : task.id
+                          );
+                        }}
+                        className="text-gray-500 bg-gray-50 border p-1 rounded"
+                      >
+                        {openedTaskId === task.id ? (
+                          <IoIosArrowUp size={17} />
+                        ) : (
+                          <MdKeyboardArrowDown size={20} />
+                        )}
+                      </button>
 
-                    <button
-                      disabled={task.status === "completed"}
-                      onClick={() => {
-                        handleUpdate(task);
-                      }}
-                      className="text-blue-500 bg-blue-100 p-1 rounded"
-                    >
-                      <IoPencil />
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleDelete(task.id, task);
-                      }}
-                      className="text-red-500 bg-red-100 p-1 rounded"
-                    >
-                      <MdDelete />
-                    </button>
+                      <button
+                        disabled={task.status === "completed"}
+                        onClick={() => {
+                          handleUpdate(task);
+                        }}
+                        className="text-blue-500 bg-blue-100 p-1 rounded"
+                      >
+                        <IoPencil />
+                      </button>
+                      <button
+                        onClick={() => {
+                          handleDelete(task.id, task);
+                        }}
+                        className="text-red-500 bg-red-100 p-1 rounded"
+                      >
+                        <MdDelete />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div>
-                {openedTaskId === task.id && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="overflow-hidden"
+                <div>
+                  {openedTaskId === task.id && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="overflow-hidden"
+                    >
+                      <hr className="my-2" />
+                      <div className="flex bg-[#f0fcff] text-sm sm:text-base border border-[#c6f5ff] shadow p-2 rounded space-x-2">
+                        <p className="font-semibold text-gray-500">Desc:</p>
+                        <p className="text-[#333333]">{task.description}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+
+                <hr className="my-2" />
+                <div className="flex items-center justify-between">
+                  <p
+                    className={`${
+                      task.status === "pending"
+                        ? "text-red-500 font-bold"
+                        : "text-green-500 font-bold"
+                    }`}
                   >
-                    <hr className="my-2" />
-                    <div className="flex bg-[#f0fcff] border border-[#c6f5ff] shadow p-2 rounded space-x-2">
-                      <p className="font-semibold text-gray-500">Desc:</p>
-                      <p className="text-[#333333]">{task.description}</p>
-                    </div>
-                  </motion.div>
-                )}
-              </div>
-            </div>
-          ))}
+                    {task.status}
+                  </p>
+                  <div className="flex text-[#0F4C5C] font-semibold items-center space-x-2">
+                    <p>{task.priority}</p>
+                    <span className="mx-1">|</span>
+                    <p>{task.category}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
         </div>
 
         {openingAddTaskForm && (
