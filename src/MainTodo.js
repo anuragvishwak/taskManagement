@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { IoIosArrowUp } from "react-icons/io";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import img1 from "./dev logo.png";
 
 function MainTodo() {
   const navigation = useNavigate();
@@ -77,7 +78,7 @@ function MainTodo() {
   }, []);
   return (
     <div>
-      <div className="bg-gray-50 min-h-screen h-full p-4 sm:p-5">
+      <div className=" min-h-screen h-full p-4 sm:p-5">
         <div className="flex items-center justify-between">
           <p className="text-2xl  sm:text-3xl font-semibold text-[#0F4C5C]">
             Welcome User
@@ -285,6 +286,10 @@ function MainTodo() {
           />
         )}
       </div>
+    <div className="flex fixed z-10 right-0 bottom-0 m-3 items-center space-x-2">
+    <p className="text-gray-400 text-sm font-semibold">Developed by:</p>
+    <img src={img1} className="h-4"/>
+    </div>
     </div>
   );
 }
