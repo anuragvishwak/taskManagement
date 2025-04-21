@@ -1,10 +1,28 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "./FirebaseConfig";
+import { toast } from "react-toastify";
 
 function Login() {
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
   const navigate = useNavigate();
+
+  async function Login() {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      console.log("Logged in successfully!");
+      toast.success("Logged in successfully!");
+      navigate("/MainTodo");
+      localStorage.setItem("email", email);
+    } catch (err) {
+      console.error("Login failed:", err.message);
+      toast.error("Invalid email or password!");
+      setemail("");
+      setpassword("");
+    }
+  }
 
   return (
     <div className="sm:flex justify-center">
@@ -25,6 +43,10 @@ function Login() {
           <div>
             <p>Email:</p>
             <input
+            type="password"
+              onChange={(e) => {
+                setemail(e.target.value);
+              }}
               placeholder="anurag@gmail.com"
               className="bg-[#0F4C5C] p-1.5 rounded border w-full border-white"
             ></input>
@@ -33,6 +55,9 @@ function Login() {
           <div className="mt-4">
             <p>Password:</p>
             <input
+              onChange={(e) => {
+                setpassword(e.target.value);
+              }}
               placeholder="********"
               className="bg-[#0F4C5C] p-1.5 rounded border w-full border-white"
             ></input>
@@ -44,7 +69,7 @@ function Login() {
 
           <button
             onClick={() => {
-              navigate("/MainTodo");
+              Login();
             }}
             className="bg-white rounded hover:shadow-xl w-full py-1 text-[#0F4C5C]"
           >

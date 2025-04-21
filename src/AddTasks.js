@@ -10,6 +10,7 @@ function AddTasks({ renderingTasks, setopeningAddTaskForm }) {
   const [priority, setpriority] = useState("");
   const [category, setcategory] = useState("");
   const currentDate = new Date();
+  const email = localStorage.getItem("email");
 
   async function creatingTask() {
     try {
@@ -20,6 +21,7 @@ function AddTasks({ renderingTasks, setopeningAddTaskForm }) {
         priority: priority,
         category: category,
         status: "pending",
+        email: email,
       });
       setopeningAddTaskForm(false);
       toast.success("Task added successfully!!");

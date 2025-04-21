@@ -21,6 +21,7 @@ function MainTodo() {
   const [capturingTaskId, setcapturingTaskId] = useState(null);
   const [openedTaskId, setOpenedTaskId] = useState(null);
   const [priority, setpriority] = useState("");
+  const email = localStorage.getItem("email");
 
   function handleCheckbox(taskId) {
     setgettingTasks((prevTasks) =>
@@ -54,8 +55,8 @@ function MainTodo() {
       id: doc.id,
       ...doc.data(),
     }));
-    setgettingTasks(multipleArray);
-    console.log(multipleArray);
+    const filteredArray = multipleArray.filter((task) => task.email === email);
+    setgettingTasks(filteredArray);
   }
 
   async function deletingTask(taskId) {
@@ -80,8 +81,8 @@ function MainTodo() {
     <div>
       <div className=" min-h-screen h-full p-4 sm:p-5">
         <div className="flex items-center justify-between">
-          <p className="text-2xl  sm:text-3xl font-semibold text-[#0F4C5C]">
-            Welcome User
+          <p className="text-2xl capitalize sm:text-3xl font-semibold text-[#0F4C5C]">
+            Welcome {email.slice(0, 6)}
           </p>
           <button
             onClick={() => {
@@ -123,116 +124,124 @@ function MainTodo() {
           </button>
         </div>
         <div>
-          {gettingTasks
-            ?.filter(
-              (task) =>
-                priority === "select priority" ||
-                priority === "" ||
-                task.priority === priority
-            )
-            .map((task) => (
-              <motion.div
-                key={task.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-                className="my-3 p-3  bg-white border"
-              >
-                <div className="flex space-x-2 items-center">
-                  <div className="mt-2">
-                    <input
-                      checked={task.status === "completed"}
-                      onChange={() => {
-                        handleCheckbox(task.id);
-                      }}
-                      type="checkbox"
-                      className="h-5 w-6"
-                    ></input>
-                  </div>
-                  <div className="flex items-center w-full justify-between">
-                    <p
-                      className={`${
-                        task.status === "completed"
-                          ? "line-through text-gray-400"
-                          : "text-[#0F4C5C]"
-                      } font-bold  border-gray-400`}
-                    >
-                      {task.title}
-                    </p>
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => {
-                          setOpenedTaskId(
-                            openedTaskId === task.id ? null : task.id
-                          );
+          {gettingTasks.length === 0 ? (
+            <p className="text-center mt-10 text-gray-400 text-lg font-semibold">
+              📝 No tasks available. Start by creating one!
+            </p>
+          ) : (
+            gettingTasks
+              ?.filter(
+                (task) =>
+                  priority === "select priority" ||
+                  priority === "" ||
+                  task.priority === priority
+              )
+              .map((task) => (
+                <motion.div
+                  key={task.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="my-3 p-3  bg-white border"
+                >
+                  <div className="flex space-x-2 items-center">
+                    <div className="mt-2">
+                      <input
+                        checked={task.status === "completed"}
+                        onChange={() => {
+                          handleCheckbox(task.id);
                         }}
-                        className="text-gray-500 bg-gray-50 border p-1 rounded"
+                        type="checkbox"
+                        className="h-5 w-6"
+                      ></input>
+                    </div>
+                    <div className="flex items-center w-full justify-between">
+                      <p
+                        className={`${
+                          task.status === "completed"
+                            ? "line-through text-gray-400"
+                            : "text-[#0F4C5C]"
+                        } font-bold  border-gray-400`}
                       >
-                        {openedTaskId === task.id ? (
-                          <IoIosArrowUp size={17} />
-                        ) : (
-                          <MdKeyboardArrowDown size={20} />
-                        )}
-                      </button>
+                        {task.title}
+                      </p>
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => {
+                            setOpenedTaskId(
+                              openedTaskId === task.id ? null : task.id
+                            );
+                          }}
+                          className="text-gray-500 bg-gray-50 border p-1 rounded"
+                        >
+                          {openedTaskId === task.id ? (
+                            <IoIosArrowUp size={17} />
+                          ) : (
+                            <MdKeyboardArrowDown size={20} />
+                          )}
+                        </button>
 
-                      <button
-                        disabled={task.status === "completed"}
-                        onClick={() => {
-                          handleUpdate(task);
-                        }}
-                        className="text-blue-500 bg-blue-100 p-1 rounded"
-                      >
-                        <IoPencil />
-                      </button>
-                      <button
-                        onClick={() => {
-                          handleDelete(task.id, task);
-                        }}
-                        className="text-red-500 bg-red-100 p-1 rounded"
-                      >
-                        <MdDelete />
-                      </button>
+                        <button
+                          disabled={task.status === "completed"}
+                          onClick={() => {
+                            handleUpdate(task);
+                          }}
+                          className="text-blue-500 bg-blue-100 p-1 rounded"
+                        >
+                          <IoPencil />
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleDelete(task.id, task);
+                          }}
+                          className="text-red-500 bg-red-100 p-1 rounded"
+                        >
+                          <MdDelete />
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div>
-                  {openedTaskId === task.id && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                      className="overflow-hidden"
-                    >
-                      <hr className="my-2" />
-                      <div className="flex bg-[#f0fcff] text-sm sm:text-base border border-[#c6f5ff] shadow p-2 rounded space-x-2">
-                        <p className="font-semibold text-gray-500">Desc:</p>
-                        <p className="text-[#333333]">{task.description}</p>
-                      </div>
-                    </motion.div>
-                  )}
-                </div>
-
-                <hr className="my-2" />
-                <div className="flex items-center justify-between">
-                  <p
-                    className={`${
-                      task.status === "pending"
-                        ? "text-red-500 font-bold"
-                        : "text-green-500 font-bold"
-                    }`}
-                  >
-                    {task.status}
-                  </p>
-                  <div className="flex text-[#0F4C5C] font-semibold items-center space-x-2">
-                    <p>{task.priority}</p>
-                    <span className="mx-1">|</span>
-                    <p>{task.category}</p>
+                  <div>
+                    {openedTaskId === task.id && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                      >
+                        <hr className="my-2" />
+                        <div className="bg-[#f0fcff] text-sm sm:text-base border border-[#c6f5ff] shadow p-2 rounded">
+                          <p className="font-semibold text-gray-500">Desc:</p>
+                          <p className="text-[#333333] text-justify">
+                            {task.description}
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
                   </div>
-                </div>
-              </motion.div>
-            ))}
+
+                  <hr className="my-2" />
+                  <div className="flex items-center text-sm sm:text-base justify-between">
+                    <p
+                      className={`${
+                        task.status === "pending"
+                          ? "text-red-500 font-bold"
+                          : "text-green-500 font-bold"
+                      }`}
+                    >
+                      {task.status}
+                    </p>
+                    <div className="flex text-[#0F4C5C] text-sm sm:text-base font-semibold items-center space-x-2">
+                      <p>{task.priority}</p>
+                      <span className="mx-1">|</span>
+                      <p>{task.category}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))
+          )}
         </div>
 
         {openingAddTaskForm && (
@@ -286,10 +295,10 @@ function MainTodo() {
           />
         )}
       </div>
-    <div className="flex fixed z-10 right-0 bottom-0 m-3 items-center space-x-2">
-    <p className="text-gray-400 text-sm font-semibold">Developed by:</p>
-    <img src={img1} className="h-4"/>
-    </div>
+      <div className="flex fixed z-10 right-0 bottom-0 m-3 items-center space-x-2">
+        <p className="text-gray-400 text-sm font-semibold">Developed by:</p>
+        <img src={img1} className="h-4" />
+      </div>
     </div>
   );
 }
