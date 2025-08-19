@@ -10,6 +10,7 @@ import { IoIosArrowUp } from "react-icons/io";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import img1 from "./dev logo.png";
+import { FaPencilAlt } from "react-icons/fa";
 
 function MainTodo() {
   const navigation = useNavigate();
@@ -19,17 +20,17 @@ function MainTodo() {
   const [gettingTasks, setgettingTasks] = useState([]);
   const [openingDeletePopup, setopeningDeletePopup] = useState(false);
   const [capturingTaskId, setcapturingTaskId] = useState(null);
-  const [openedTaskId, setOpenedTaskId] = useState(null);
+  const [search, setsearch] = useState("");
   const [priority, setpriority] = useState("");
   const email = localStorage.getItem("email");
 
   const colors = [
-    "bg-red-100 border-red-300",
-    "bg-yellow-100 border-yellow-300",
-    "bg-purple-100 border-purple-300",
-    "bg-orange-100 border-orange-300",
-    "bg-green-100 border-green-300",
-    "bg-blue-100 border-blue-300",
+    "border-red-300",
+    "border-yellow-300",
+    "border-purple-300",
+    "border-orange-300",
+    "border-green-300",
+    "border-blue-300",
   ];
 
   function handleCheckbox(taskId) {
@@ -56,17 +57,27 @@ function MainTodo() {
     setcapturingWholeData(task);
   }
 
-  async function renderingTasks() {
-    const taskDetails = await getDocs(
-      collection(database, "todo_list_details")
+ async function renderingTasks() {
+  const taskDetails = await getDocs(
+    collection(database, "todo_list_details")
+  );
+
+  let multipleArray = taskDetails.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  const filteredArray = multipleArray.filter((task) => task.email === email);
+
+  if (search) {
+    setgettingTasks(
+      filteredArray.filter((task) => task.title === search)
     );
-    let multipleArray = taskDetails.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    const filteredArray = multipleArray.filter((task) => task.email === email);
+  } else {
     setgettingTasks(filteredArray);
   }
+}
+
 
   async function deletingTask(taskId) {
     try {
@@ -85,54 +96,43 @@ function MainTodo() {
 
   useEffect(() => {
     renderingTasks();
-  }, []);
+  }, [search]);
   return (
     <div>
-      <div className=" min-h-screen h-full p-4 sm:p-5">
-        <div className="flex items-center justify-between">
-          <p className="text-2xl capitalize sm:text-3xl font-semibold text-[#0F4C5C]">
+      <div className=" min-h-screen bg-gray-100 h-full p-4 sm:p-4">
+        <div className="flex bg-white p-3 rounded border border-gray-300 shadow items-center justify-between">
+          <p className="text-2xl capitalize sm:text-3xl font-semibold text-blue-500">
             Welcome {email.slice(0, 6)}
           </p>
-          <button
-            onClick={() => {
-              localStorage.clear();
-              navigation("/");
-            }}
-            className="border rounded px-4 py-1 border-[#0F4C5C]"
-          >
-            <div className="flex text-[#0F4C5C] font-semibold items-center space-x-2">
-              <IoLogOut size={20} />
-              Logout
-            </div>
-          </button>
-        </div>
+          <div className="flex items-center space-x-3">
+            <input
+              onChange={(e) => {
+                setsearch(e.target.value);
+              }}
+              placeholder="Search tasks....."
+              className="border p-1 rounded border-gray-400 w-80"
+            ></input>
+            <button
+              onClick={() => {
+                setopeningAddTaskForm(true);
+              }}
+              className="bg-blue-500 py-1 px-3 rounded font-senibold text-white"
+            >
+              + Create List
+            </button>
 
-        <hr className="my-3 border-gray-300" />
-
-        <div className="flex items-center justify-end space-x-3">
-          <select
-            onChange={(e) => {
-              setpriority(e.target.value);
-            }}
-            className="border p-1 rounded border-gray-300 w-52"
-          >
-            <option>select priority</option>
-            <option>Urgent</option>
-            <option>High</option>
-            <option>Medium</option>
-            <option>Low</option>
-            <option>Optional</option>
-          </select>
-          <button
-            onClick={() => {
-              setopeningAddTaskForm(true);
-            }}
-            className="bg-[#0F4C5C] py-1 px-3 rounded font-senibold text-white"
-          >
-            + Create List
-          </button>
+            <button
+              onClick={() => {
+                localStorage.clear();
+                navigation("/");
+              }}
+              className="border-2 rounded p-1 border-blue-500"
+            >
+              <IoLogOut className="text-blue-500" size={20} />
+            </button>
+          </div>
         </div>
-        <div className="grid grid-cols-1 mt-5 md:grid-cols-2 lg:grid-cols-3  gap-5">
+        <div className="grid grid-cols-1 mt-4 md:grid-cols-2 lg:grid-cols-3  gap-5">
           {gettingTasks
             ?.filter(
               (task) =>
@@ -147,87 +147,74 @@ function MainTodo() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
-                className={` p-3 rounded-lg shadow-md flex flex-col justify-between ${
+                className={`shadow-md bg-white rounded-t rounded-b rounded-r flex flex-col justify-between border-l-8 ${
                   colors[index % colors.length]
                 }`}
-                style={{ minHeight: "170px" }} // ✅ ensures consistent height
               >
-                {/* Header */}
-                <div>
-                  <div className="flex space-x-2 items-center">
-                    <div className="mt-2">
-                      <input
-                        checked={task.status === "completed"}
-                        onChange={() => handleCheckbox(task.id)}
-                        type="checkbox"
-                        className="h-5 w-6"
-                      />
-                    </div>
-                    <div className="flex items-center w-full justify-between">
-                      <p
-                        className={`${
-                          task.status === "completed"
-                            ? "line-through text-gray-400"
-                            : "text-[#0F4C5C]"
-                        } font-bold`}
-                      >
-                        {task.title}
-                      </p>
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={() =>
-                            setOpenedTaskId(
-                              openedTaskId === task.id ? null : task.id
-                            )
-                          }
-                          className="text-gray-500 bg-gray-50 border p-1 rounded"
+                <div
+                  style={{ minHeight: "260px" }}
+                  className="border-t border-r border-b rounded-t rounded-b rounded-r border-gray-300 p-3"
+                >
+                  <div>
+                    <div className="flex space-x-2 items-center">
+                      <div className="mt-2">
+                        <input
+                          checked={task.status === "completed"}
+                          onChange={() => handleCheckbox(task.id)}
+                          type="checkbox"
+                          className="h-5 w-6"
+                        />
+                      </div>
+                      <div className="flex items-center w-full justify-between">
+                        <p
+                          className={`${
+                            task.status === "completed"
+                              ? "line-through text-gray-300"
+                              : "text-blue-500"
+                          } font-bold`}
                         >
-                          {openedTaskId === task.id ? (
-                            <IoIosArrowUp size={17} />
-                          ) : (
-                            <MdKeyboardArrowDown size={20} />
-                          )}
-                        </button>
-                        <button
-                          disabled={task.status === "completed"}
-                          onClick={() => handleUpdate(task)}
-                          className="text-blue-500 bg-blue-100 p-1 rounded"
-                        >
-                          <IoPencil />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(task.id, task)}
-                          className="text-red-500 bg-red-100 p-1 rounded"
-                        >
-                          <MdDelete />
-                        </button>
+                          {task.title}
+                        </p>
+                        <div className="flex items-center space-x-1">
+                          <button
+                            disabled={task.status === "completed"}
+                            onClick={() => handleUpdate(task)}
+                            className="text-blue-500"
+                          >
+                            <FaPencilAlt size={20} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(task.id, task)}
+                            className="text-red-500"
+                          >
+                            <MdDelete size={24} />
+                          </button>
+                        </div>
                       </div>
                     </div>
+
+                    <div className="mt-2">
+                      <p className="font-semibold text-gray-500">Desc:</p>
+                      <p className="text-[#333333] text-justify">
+                        {task.description}
+                      </p>
+                    </div>
                   </div>
 
-                  {/* Description */}
-                  <div className="mt-2">
-                    <p className="font-semibold text-gray-500">Desc:</p>
-                    <p className="text-[#333333] text-justify">
-                      {task.description}
+                  <div className="mt-3 border-t pt-2 flex justify-between text-sm sm:text-base items-center">
+                    <p
+                      className={`${
+                        task.status === "pending"
+                          ? "text-red-500 font-bold"
+                          : "text-green-500 font-bold"
+                      }`}
+                    >
+                      {task.status}
                     </p>
-                  </div>
-                </div>
-
-                {/* Footer (always at bottom) */}
-                <div className="mt-3 border-t pt-2 flex justify-between text-sm sm:text-base items-center">
-                  <p
-                    className={`${
-                      task.status === "pending"
-                        ? "text-red-500 font-bold"
-                        : "text-green-500 font-bold"
-                    }`}
-                  >
-                    {task.status}
-                  </p>
-                  <div className="flex text-[#0F4C5C] font-semibold items-center space-x-3">
-                    <p>Priority: {task.priority}</p>
-                    <p>Category: {task.category}</p>
+                    <div className="flex text-blue-500 font-semibold items-center space-x-3">
+                      <p>Priority: {task.priority}</p>
+                      <p>Category: {task.category}</p>
+                    </div>
                   </div>
                 </div>
               </motion.div>
