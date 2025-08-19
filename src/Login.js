@@ -43,7 +43,7 @@ function Login() {
           <div>
             <p>Email:</p>
             <input
-            type="password"
+            type="email"
               onChange={(e) => {
                 setemail(e.target.value);
               }}
@@ -55,6 +55,7 @@ function Login() {
           <div className="mt-4">
             <p>Password:</p>
             <input
+            type="password"
               onChange={(e) => {
                 setpassword(e.target.value);
               }}
