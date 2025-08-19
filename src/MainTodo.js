@@ -23,6 +23,15 @@ function MainTodo() {
   const [priority, setpriority] = useState("");
   const email = localStorage.getItem("email");
 
+  const colors = [
+    "bg-red-100 border-red-300",
+    "bg-yellow-100 border-yellow-300",
+    "bg-purple-100 border-purple-300",
+    "bg-orange-100 border-orange-300",
+    "bg-green-100 border-green-300",
+    "bg-blue-100 border-blue-300",
+  ];
+
   function handleCheckbox(taskId) {
     setgettingTasks((prevTasks) =>
       prevTasks.map((task) =>
@@ -123,38 +132,36 @@ function MainTodo() {
             + Create List
           </button>
         </div>
-        <div>
-          {gettingTasks.length === 0 ? (
-            <p className="text-center mt-10 text-gray-400 text-lg font-semibold">
-              📝 No tasks available. Start by creating one!
-            </p>
-          ) : (
-            gettingTasks
-              ?.filter(
-                (task) =>
-                  priority === "select priority" ||
-                  priority === "" ||
-                  task.priority === priority
-              )
-              .map((task) => (
-                <motion.div
-                  key={task.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
-                  className="my-3 p-3  bg-white border"
-                >
+        <div className="grid grid-cols-1 mt-5 md:grid-cols-2 sm:grid-cols-3  gap-5">
+          {gettingTasks
+            ?.filter(
+              (task) =>
+                priority === "select priority" ||
+                priority === "" ||
+                task.priority === priority
+            )
+            .map((task, index) => (
+              <motion.div
+                key={task.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className={` p-3 rounded-lg shadow-md flex flex-col justify-between ${
+                  colors[index % colors.length]
+                }`}
+                style={{ minHeight: "170px" }} // ✅ ensures consistent height
+              >
+                {/* Header */}
+                <div>
                   <div className="flex space-x-2 items-center">
                     <div className="mt-2">
                       <input
                         checked={task.status === "completed"}
-                        onChange={() => {
-                          handleCheckbox(task.id);
-                        }}
+                        onChange={() => handleCheckbox(task.id)}
                         type="checkbox"
                         className="h-5 w-6"
-                      ></input>
+                      />
                     </div>
                     <div className="flex items-center w-full justify-between">
                       <p
@@ -162,17 +169,17 @@ function MainTodo() {
                           task.status === "completed"
                             ? "line-through text-gray-400"
                             : "text-[#0F4C5C]"
-                        } font-bold  border-gray-400`}
+                        } font-bold`}
                       >
                         {task.title}
                       </p>
                       <div className="flex items-center space-x-2">
                         <button
-                          onClick={() => {
+                          onClick={() =>
                             setOpenedTaskId(
                               openedTaskId === task.id ? null : task.id
-                            );
-                          }}
+                            )
+                          }
                           className="text-gray-500 bg-gray-50 border p-1 rounded"
                         >
                           {openedTaskId === task.id ? (
@@ -181,20 +188,15 @@ function MainTodo() {
                             <MdKeyboardArrowDown size={20} />
                           )}
                         </button>
-
                         <button
                           disabled={task.status === "completed"}
-                          onClick={() => {
-                            handleUpdate(task);
-                          }}
+                          onClick={() => handleUpdate(task)}
                           className="text-blue-500 bg-blue-100 p-1 rounded"
                         >
                           <IoPencil />
                         </button>
                         <button
-                          onClick={() => {
-                            handleDelete(task.id, task);
-                          }}
+                          onClick={() => handleDelete(task.id, task)}
                           className="text-red-500 bg-red-100 p-1 rounded"
                         >
                           <MdDelete />
@@ -202,46 +204,34 @@ function MainTodo() {
                       </div>
                     </div>
                   </div>
-                  <div>
-                    {openedTaskId === task.id && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                        className="overflow-hidden"
-                      >
-                        <hr className="my-2" />
-                        <div className="bg-[#f0fcff] text-sm sm:text-base border border-[#c6f5ff] shadow p-2 rounded">
-                          <p className="font-semibold text-gray-500">Desc:</p>
-                          <p className="text-[#333333] text-justify">
-                            {task.description}
-                          </p>
-                        </div>
-                      </motion.div>
-                    )}
-                  </div>
 
-                  <hr className="my-2" />
-                  <div className="flex items-center text-sm sm:text-base justify-between">
-                    <p
-                      className={`${
-                        task.status === "pending"
-                          ? "text-red-500 font-bold"
-                          : "text-green-500 font-bold"
-                      }`}
-                    >
-                      {task.status}
+                  {/* Description */}
+                  <div className="mt-2">
+                    <p className="font-semibold text-gray-500">Desc:</p>
+                    <p className="text-[#333333] text-justify">
+                      {task.description}
                     </p>
-                    <div className="flex text-[#0F4C5C] text-sm sm:text-base font-semibold items-center space-x-2">
-                      <p>{task.priority}</p>
-                      <span className="mx-1">|</span>
-                      <p>{task.category}</p>
-                    </div>
                   </div>
-                </motion.div>
-              ))
-          )}
+                </div>
+
+                {/* Footer (always at bottom) */}
+                <div className="mt-3 border-t pt-2 flex justify-between text-sm sm:text-base items-center">
+                  <p
+                    className={`${
+                      task.status === "pending"
+                        ? "text-red-500 font-bold"
+                        : "text-green-500 font-bold"
+                    }`}
+                  >
+                    {task.status}
+                  </p>
+                  <div className="flex text-[#0F4C5C] font-semibold items-center space-x-3">
+                    <p>Priority: {task.priority}</p>
+                    <p>Category: {task.category}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
         </div>
 
         {openingAddTaskForm && (
