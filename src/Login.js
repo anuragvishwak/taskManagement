@@ -25,23 +25,20 @@ function Login() {
   }
 
   return (
-    <div className="sm:flex min-h-screen bg-[#7C3AED]">
-      {/* Left Section */}
-      <div className="flex items-center h-full py-[92px] sm:h-auto justify-center w-full">
+    <div className="sm:flex h-screen bg-[#7C3AED]">
+      <div className="flex items-center  py-[92px] h-auto justify-center w-full">
         <div className="text-white">
-          <p className="text-bold text-8xl">TO DO</p>
+          <p className="font-bold text-7xl sm:text-8xl">TO DO</p>
           <p className="text-xl text-center mt-1 font-semibold">
             Reminds Everything!
           </p>
         </div>
       </div>
 
-      {/* Right Section */}
       <div className="sm:flex items-end sm:items-center justify-center p-5 sm:h-screen sm:w-6/12 text-blue-500">
         <div className="bg-white p-3 sm:p-0 sm:h-full rounded w-full">
           <div className="flex h-full items-end sm:items-center justify-center pb-6 sm:pb-0">
             <div>
-              {/* Heading */}
               <div className="mb-6 sm:mb-10">
                 <p className="text-xl sm:text-5xl text-[#7C3AED] font-bold">
                   Welcome Back!
@@ -51,7 +48,6 @@ function Login() {
                 </p>
               </div>
 
-              {/* Email */}
               <div>
                 <p className="font-semibold text-xl">Email:</p>
                 <input
