@@ -100,7 +100,7 @@ function AddTasks({ renderingTasks, setopeningAddTaskForm }) {
           }}
           className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white py-1.5 w-full mt-5 rounded"
         >
-          Add Task
+          Add Task  
         </button>
       </div>
     </div>

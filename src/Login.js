@@ -9,7 +9,7 @@ function Login() {
   const [password, setpassword] = useState("");
   const navigate = useNavigate();
 
-  async function Login() {
+  async function LoginUser() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       console.log("Logged in successfully!");
@@ -25,7 +25,8 @@ function Login() {
   }
 
   return (
-    <div className="sm:flex min-h-screen bg-blue-500">
+    <div className="sm:flex min-h-screen bg-[#7C3AED]">
+      {/* Left Section */}
       <div className="flex items-center h-full py-[92px] sm:h-auto justify-center w-full">
         <div className="text-white">
           <p className="text-bold text-8xl">TO DO</p>
@@ -34,51 +35,57 @@ function Login() {
           </p>
         </div>
       </div>
-      <div className="sm:flex sm:mt-0 mt-36 items-center justify-center p-5 sm:h-screen sm:w-6/12 text-blue-500 "> 
+
+      {/* Right Section */}
+      <div className="sm:flex items-end sm:items-center justify-center p-5 sm:h-screen sm:w-6/12 text-blue-500">
         <div className="bg-white p-3 sm:p-0 sm:h-full rounded w-full">
-          <div className="flex sm:h-full items-end sm:items-center justify-center">
-            <div className="">
+          <div className="flex h-full items-end sm:items-center justify-center pb-6 sm:pb-0">
+            <div>
+              {/* Heading */}
               <div className="mb-6 sm:mb-10">
-                <p className="text-xl sm:text-5xl font-bold">Welcome Back!</p>
-                <p
-                  className="w-auto sm:text-xl"
-                >
+                <p className="text-xl sm:text-5xl text-[#7C3AED] font-bold">
+                  Welcome Back!
+                </p>
+                <p className="w-auto text-blue-500 sm:text-xl">
                   Hey! welcome back to your special place...
                 </p>
               </div>
+
+              {/* Email */}
               <div>
-                <p>Email:</p>
+                <p className="font-semibold text-xl">Email:</p>
                 <input
                   type="email"
-                  onChange={(e) => {
-                    setemail(e.target.value);
-                  }}
+                  value={email}
+                  onChange={(e) => setemail(e.target.value)}
                   placeholder="anurag@gmail.com"
                   className="p-1.5 rounded border w-full sm:w-[400px] border-gray-500"
-                ></input>
+                />
               </div>
 
+              {/* Password */}
               <div className="mt-4">
-                <p>Password:</p>
+                <p className="font-semibold text-xl">Password:</p>
                 <input
                   type="password"
-                  onChange={(e) => {
-                    setpassword(e.target.value);
-                  }}
+                  value={password}
+                  onChange={(e) => setpassword(e.target.value)}
                   placeholder="********"
                   className="p-1.5 rounded border w-full border-gray-500"
-                ></input>
+                />
               </div>
 
+              {/* Forgot password */}
               <div className="py-2 flex justify-end">
-                <button>forgot password?</button>
+                <button className="text-sm text-blue-600 hover:underline">
+                  forgot password?
+                </button>
               </div>
 
+              {/* Sign In Button */}
               <button
-                onClick={() => {
-                  Login();
-                }}
-                className="text-white rounded hover:shadow-xl w-full py-1 bg-blue-500"
+                onClick={LoginUser}
+                className="text-white rounded hover:shadow-xl w-full py-1 bg-[#7C3AED] hover:bg-[#6D28D9]"
               >
                 Sign In
               </button>
