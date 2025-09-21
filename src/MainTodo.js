@@ -100,23 +100,23 @@ function MainTodo() {
   return (
     <div>
       <div className=" min-h-screen bg-gray-100 h-full p-4 sm:p-4">
-        <div className="flex bg-white p-3 rounded border border-gray-300 shadow items-center justify-between">
-          <p className="text-2xl capitalize sm:text-3xl font-semibold text-blue-500">
+        <div className="sm:flex bg-white p-3 rounded border border-gray-300 shadow items-center justify-between">
+          <p className="text-2xl capitalize sm:text-3xl font-semibold text-[#7C3AED]">
             Welcome {email.slice(0, 6)}
           </p>
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center mt-2 space-x-3">
             <input
               onChange={(e) => {
                 setsearch(e.target.value);
               }}
               placeholder="Search tasks....."
-              className="border p-1 rounded border-gray-400 w-80"
+              className="border p-1 rounded border-gray-400 sm:w-80"
             ></input>
             <button
               onClick={() => {
                 setopeningAddTaskForm(true);
               }}
-              className="bg-blue-500 py-1 px-3 rounded font-senibold text-white"
+              className="bg-[#7C3AED] hover:bg-[#6D28D9] text-sm sm:text-base py-1.5 sm:py-1 px-3 rounded font-senibold text-white"
             >
               + Create List
             </button>
@@ -126,9 +126,9 @@ function MainTodo() {
                 localStorage.clear();
                 navigation("/");
               }}
-              className="border-2 rounded p-1 border-blue-500"
+              className="border-2 rounded p-1 border-[#7C3AED]"
             >
-              <IoLogOut className="text-blue-500" size={20} />
+              <IoLogOut className="text-[#7C3AED]" size={20} />
             </button>
           </div>
         </div>
@@ -170,7 +170,7 @@ function MainTodo() {
                           className={`${
                             task.status === "completed"
                               ? "line-through text-gray-300"
-                              : "text-blue-500"
+                              : "text-[#7C3AED]"
                           } font-bold`}
                         >
                           {task.title}
