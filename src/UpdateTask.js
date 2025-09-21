@@ -41,7 +41,7 @@ function UpdateTask({
     <div className="bg-black z-50 flex flex-col justify-center items-center fixed inset-0 bg-opacity-70">
       <div className="bg-white p-5 w-80 sm:w-5/12 rounded">
         <div className="flex items-center mb-5 justify-between">
-          <p className="text-xl text-[#0F4C5C] font-bold">Update Task</p>
+          <p className="text-xl text-[#7C3AED] font-bold">Update Task</p>
           <button
             onClick={() => {
               setopeningUpdateTaskForm(false);
@@ -52,7 +52,7 @@ function UpdateTask({
         </div>
         <div className="w-full">
           <div>
-            <p className="text-lg font-semibold text-[#0F4C5C]">Title:</p>
+            <p className="text-lg font-semibold text-[#7C3AED]">Title:</p>
             <input
               value={title}
               onChange={(e) => {
@@ -63,7 +63,7 @@ function UpdateTask({
             ></input>
           </div>
           <div className="my-3">
-            <p className="font-semibold text-lg text-[#0F4C5C]">Description:</p>
+            <p className="font-semibold text-lg text-[#7C3AED]">Description:</p>
             <textarea
               value={description}
               onChange={(e) => {
@@ -80,7 +80,7 @@ function UpdateTask({
             onChange={(e) => {
               setpriority(e.target.value);
             }}
-            className="border p-1.5 rounded text-[#0F4C5C] border-gray-300 w-full"
+            className="border p-1.5 rounded text-[#7C3AED] border-gray-300 w-full"
           >
             <option>select priority</option>
             <option>Urgent</option>
@@ -95,7 +95,7 @@ function UpdateTask({
             onChange={(e) => {
               setcategory(e.target.value);
             }}
-            className="border p-1.5 rounded text-[#0F4C5C] border-gray-300"
+            className="border p-1.5 rounded text-[#7C3AED] border-gray-300"
           >
             <option>select Category</option>
             <option>Work</option>
@@ -107,7 +107,7 @@ function UpdateTask({
           onClick={() => {
             updatingTask();
           }}
-          className="bg-[#0F4C5C] text-white py-1.5 mt-5 w-full rounded"
+          className="bg-[#7C3AED] text-white py-1.5 mt-5 w-full rounded"
         >
           Update Task
         </button>

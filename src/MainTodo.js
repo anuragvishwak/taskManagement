@@ -104,15 +104,16 @@ function MainTodo() {
           <p className="text-2xl capitalize sm:text-3xl font-semibold text-[#7C3AED]">
             Welcome {email.slice(0, 6)}
           </p>
-          <div className="flex items-center mt-2 space-x-3">
+          <div className="sm:flex items-center mt-2 space-x-3">
             <input
               onChange={(e) => {
                 setsearch(e.target.value);
               }}
               placeholder="Search tasks....."
-              className="border p-1 rounded border-gray-400 sm:w-80"
+              className="border p-1 rounded border-gray-400 w-full sm:w-80"
             ></input>
-            <button
+            <div className="flex items-center justify-end mt-2 sm:mt-0 space-x-2">
+              <button
               onClick={() => {
                 setopeningAddTaskForm(true);
               }}
@@ -130,6 +131,7 @@ function MainTodo() {
             >
               <IoLogOut className="text-[#7C3AED]" size={20} />
             </button>
+            </div>
           </div>
         </div>
         <div className="grid grid-cols-1 mt-4 md:grid-cols-2 lg:grid-cols-3  gap-5">
