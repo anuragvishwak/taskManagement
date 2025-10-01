@@ -33,6 +33,8 @@ function MainTodo() {
     "border-blue-300",
   ];
 
+  console.log("finding tasks", gettingTasks);
+
   function handleCheckbox(taskId) {
     setgettingTasks((prevTasks) =>
       prevTasks.map((task) =>
@@ -57,27 +59,24 @@ function MainTodo() {
     setcapturingWholeData(task);
   }
 
- async function renderingTasks() {
-  const taskDetails = await getDocs(
-    collection(database, "todo_list_details")
-  );
-
-  let multipleArray = taskDetails.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  }));
-
-  const filteredArray = multipleArray.filter((task) => task.email === email);
-
-  if (search) {
-    setgettingTasks(
-      filteredArray.filter((task) => task.title === search)
+  async function renderingTasks() {
+    const taskDetails = await getDocs(
+      collection(database, "todo_list_details")
     );
-  } else {
-    setgettingTasks(filteredArray);
-  }
-}
 
+    let multipleArray = taskDetails.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    const filteredArray = multipleArray.filter((task) => task.email === email);
+
+    if (search) {
+      setgettingTasks(filteredArray.filter((task) => task.title === search));
+    } else {
+      setgettingTasks(filteredArray);
+    }
+  }
 
   async function deletingTask(taskId) {
     try {
@@ -114,23 +113,23 @@ function MainTodo() {
             ></input>
             <div className="flex items-center justify-end mt-2 sm:mt-0 space-x-2">
               <button
-              onClick={() => {
-                setopeningAddTaskForm(true);
-              }}
-              className="bg-[#7C3AED] hover:bg-[#6D28D9] text-sm sm:text-base py-1.5 sm:py-1 px-3 rounded font-senibold text-white"
-            >
-              + Create List
-            </button>
+                onClick={() => {
+                  setopeningAddTaskForm(true);
+                }}
+                className="bg-[#7C3AED] hover:bg-[#6D28D9] text-sm sm:text-base py-1.5 sm:py-1 px-3 rounded font-senibold text-white"
+              >
+                + Create List
+              </button>
 
-            <button
-              onClick={() => {
-                localStorage.clear();
-                navigation("/");
-              }}
-              className="border-2 rounded p-1 border-[#7C3AED]"
-            >
-              <IoLogOut className="text-[#7C3AED]" size={20} />
-            </button>
+              <button
+                onClick={() => {
+                  localStorage.clear();
+                  navigation("/");
+                }}
+                className="border-2 rounded p-1 border-[#7C3AED]"
+              >
+                <IoLogOut className="text-[#7C3AED]" size={20} />
+              </button>
             </div>
           </div>
         </div>
@@ -197,9 +196,18 @@ function MainTodo() {
 
                     <div className="mt-2">
                       <p className="font-semibold text-gray-500">Desc:</p>
-                      <p className="text-[#333333] text-justify">
-                        {task.description}
-                      </p>
+
+                      {task.descMode === "para" ? (
+                        <p className="text-[#333333] whitespace-pre-line">
+                          {task.description}
+                        </p>
+                      ) : (
+                        <ul className="list-disc ml-5 text-[#333333]">
+                          {task.description.map((point, idx) => (
+                            <li key={idx}>{point}</li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
                   </div>
 

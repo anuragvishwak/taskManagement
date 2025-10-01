@@ -11,32 +11,64 @@ function AddTasks({ renderingTasks, setopeningAddTaskForm }) {
   const [category, setcategory] = useState("");
   const currentDate = new Date();
   const email = localStorage.getItem("email");
+  const [descMode, setDescMode] = useState("para");
+  const [descriptionList, setDescriptionList] = useState([""]);
 
-  async function creatingTask() {
-    try {
-      await addDoc(collection(database, "todo_list_details"), {
-        title: title,
-        description: description,
-        date: currentDate,
-        priority: priority,
-        category: category,
-        status: "pending",
-        email: email,
-      });
-      setopeningAddTaskForm(false);
-      toast.success("Task added successfully!!");
-      renderingTasks();
-    } catch (error) {
-      console.error("Error adding task: ", error);
-      toast.error("Something went wrong!!");
-    }
+  function handleDescriptionChange(index, value) {
+    const newList = [...descriptionList];
+    newList[index] = value;
+    setDescriptionList(newList);
+  }
+
+  function addDescriptionField() {
+    setDescriptionList([...descriptionList, ""]);
+  }
+
+  async function handleSubmit(e) {
+    await addDoc(collection(database, "todo_list_details"), {
+      title: title,
+      description: descMode === "para" ? description : descriptionList,
+      date: currentDate,
+      priority: priority,
+      category: category,
+      status: "pending",
+      email: email,
+    });
+
+    setopeningAddTaskForm(false);
   }
 
   return (
     <div className="bg-black z-50 flex flex-col justify-center items-center fixed inset-0 bg-opacity-70">
       <div className="bg-white w-80 sm:w-5/12 p-5 rounded">
         <div className="flex items-center mb-5 justify-between">
-          <p className="text-xl text-[#7C3AED]  font-bold">Add Task</p>
+          <div className="flex items-center space-x-5">
+            <p className="text-xl text-[#7C3AED]  font-bold">Add Task</p>
+            <div className="flex gap-3 mb-3">
+              <button
+                type="button"
+                className={`px-3 py-1 rounded ${
+                  descMode === "para"
+                    ? "bg-[#7C3AED] text-white"
+                    : "bg-gray-200"
+                }`}
+                onClick={() => setDescMode("para")}
+              >
+                Paragraph
+              </button>
+              <button
+                type="button"
+                className={`px-3 py-1 rounded ${
+                  descMode === "list"
+                    ? "bg-[#7C3AED] text-white"
+                    : "bg-gray-200"
+                }`}
+                onClick={() => setDescMode("list")}
+              >
+                List
+              </button>
+            </div>
+          </div>
           <button
             onClick={() => {
               setopeningAddTaskForm(false);
@@ -56,16 +88,35 @@ function AddTasks({ renderingTasks, setopeningAddTaskForm }) {
               className="italic border p-1.5 rounded border-gray-300 w-full"
             ></input>
           </div>
-          <div className="my-3">
-            <p className="font-semibold text-lg text-[#7C3AED] ">Description:</p>
+        </div>
+        <div className="my-5">
+          {descMode === "para" ? (
             <textarea
-              onChange={(e) => {
-                setdescription(e.target.value);
-              }}
-              placeholder="Write something here..."
-              className="italic border h-20 p-1.5 rounded border-gray-300 w-full"
-            ></textarea>
-          </div>
+              value={description}
+              onChange={(e) => setdescription(e.target.value)}
+              placeholder="Write description..."
+              className="w-full border p-2 rounded h-24"
+            />
+          ) : (
+            <div>
+              {descriptionList.map((desc, idx) => (
+                <input
+                  key={idx}
+                  value={desc}
+                  onChange={(e) => handleDescriptionChange(idx, e.target.value)}
+                  placeholder={`Point ${idx + 1}`}
+                  className="w-full border p-2 rounded mb-2"
+                />
+              ))}
+              <button
+                type="button"
+                onClick={addDescriptionField}
+                className="text-[#7C3AED] text-sm"
+              >
+                + Add More
+              </button>
+            </div>
+          )}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 ">
           <select
@@ -96,11 +147,11 @@ function AddTasks({ renderingTasks, setopeningAddTaskForm }) {
         </div>
         <button
           onClick={() => {
-            creatingTask();
+            handleSubmit();
           }}
           className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white py-1.5 w-full mt-5 rounded"
         >
-          Add Task  
+          Add Task
         </button>
       </div>
     </div>
